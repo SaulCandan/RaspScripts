@@ -1,0 +1,20 @@
+#!/usr/bin/expect -f
+
+set timeout -1
+
+set ipPublica [lindex $argv 0]
+
+spawn ssh pi@192.168.1.123
+
+expect {
+	
+	"*Last login*\r" { interact + return; exit; }
+	"ssh:*\r" { spawn ssh pi@$ipPublica; 
+		expect {         
+			"*Last login*\r" { interact ++ return; exit; }
+			"ssh:*\r" {spawn put "No tienes conexion\r" ;exit}
+		}
+	}
+}  
+
+expect eof
